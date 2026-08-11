@@ -1,4 +1,4 @@
-# Scale-Plan: Scalable Language-Enabled Task Planning for Heterogeneous Multi-Robot Teams
+# Scale-Plan: Scalable Language-Enabled Task Planning for Heterogeneous Multi-Robot Teams (IROS 2026 - PITTSBURGH, PA, USA)
 
 [Paper](https://arxiv.org/abs/2603.08814)
 
