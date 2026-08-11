@@ -1,6 +1,7 @@
 # Scale-Plan: Scalable Language-Enabled Task Planning for Heterogeneous Multi-Robot Teams (IROS 2026)
 
-Paper Accepted in IROS 2026
+Paper Accepted in IROS 2026.
+
 [Paper Pre-Print](https://arxiv.org/abs/2603.08814)
 
 This is the official implementation of **Scale-Plan**, an LLM-assisted task
