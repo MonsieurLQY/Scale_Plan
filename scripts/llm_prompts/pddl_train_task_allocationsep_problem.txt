@@ -1,0 +1,225 @@
+#Example 1
+#Subtask examination from action perspective:
+# SubTask 1: Slice the Potato
+
+# Initial Precondition analyze due to previous subtask:
+#1. Robot not at the potato
+#2. Robot not holding the potato
+
+GoToObject: robot goes to the knife.
+Parameters: ?robot , ?knife
+Preconditions: (not (inaction ?robot))
+Effects: (at ?robot ?knife), (not (inaction ?robot))
+                                   
+PickupObject: robot picks up the knife.
+Parameters: ?robot, ?knife, ?knife
+Preconditions: (at-location ?knife ?knife), (at ?robot ?knife), (not (holding ?robot ?knife)), (not (inaction ?robot))
+Effects: (holding ?robot ?knife), (not (inaction ?robot))
+
+GoToObject: robot goes to the potato.
+Parameters: ?robot , ?potato
+Preconditions: (not (inaction ?robot))
+Effects: (at ?robot ?potato), (not (inaction ?robot))
+                                   
+SliceObject: robot slices the potato.
+Parameters: ?robot, ?potato, ?potato
+Preconditions: (at-location ?potato ?potato), (at ?robot ?potato), (not (inaction ?robot))
+Effects: (sliced ?potato), (not (inaction ?robot))
+
+Assigned Robots: Robot 1
+Objects Involved: Potato, knife
+
+#Domain file content,
+(define (domain robot1)
+  (:requirements :strips :typing :negative-preconditions) 
+  (:types robot object)
+  (:predicates
+    (at ?robot - robot ?object - object)
+    (inaction ?robot - robot) 
+    (holding ?robot - robot ?object - object)
+    (at-location  ?object - object ?location - object)
+    (switch-on ?robot - robot ?object - object)
+    (switch-off ?robot - robot ?object - object)
+    (object-open ?robot - robot ?object - object)
+    (object-close ?robot - robot ?object - object)
+    (break ?robot - robot ?object - object)
+    (sliced ?object - object)
+  )
+  
+  (:action GoToObject
+    :parameters (?robot - robot ?object - object)
+    :precondition (not (inaction ?robot))
+
+    :effect (and 
+              (at ?robot ?object)
+              (forall (?another_object - object)
+                (when (at ?robot ?another_object)
+                  (not (at ?robot ?another_object))
+                )
+              )
+              (not (inaction ?robot))
+            )
+  )
+
+
+  (:action PickupObject
+    :parameters (?robot - robot ?object - object ?location - object)
+    :precondition (and 
+                    (at-location ?object ?location)
+                    (at ?robot ?location)
+                    (not(inaction ?robot))
+    )
+    :effect (and
+              (holding ?robot ?object)
+              (not(inaction ?robot))
+    )
+  )
+
+  (:action PutObject
+    :parameters (?robot - robot ?object  - object ?location - object)
+    :precondition (and 
+                    (holding ?robot ?object)
+                    (not(inaction ?robot))
+                    (at ?robot ?location)
+    )
+    :effect (and
+              (at-location ?object ?location)
+              (not (holding ?robot ?object))
+              (not(inaction ?robot))
+    )
+  )
+  
+  (:action SwitchOn
+    :parameters (?robot - robot ?object - object)
+    :precondition (and 
+                    (not(inaction ?robot))
+                    (at ?robot ?object)
+    )   
+    :effect (and
+              (not(inaction ?robot))
+              (switch-on ?robot ?object)
+    ) 
+  )
+
+
+  (:action SwitchOff
+    :parameters (?robot - robot ?object - object)
+    :precondition (and
+                    (not(inaction ?robot))
+                    (at ?robot ?object)
+    )
+    :effect (and
+                (not(inaction ?robot))
+                (switch-off ?robot ?object)
+    )    
+  )
+
+
+  (:action OpenObject
+    :parameters (?robot - robot ?object - object)
+    :precondition (and
+                    (not(inaction ?robot))
+                    (at ?robot ?object)
+    )
+      
+    :effect (and
+                (not(inaction ?robot))
+                (object-open ?robot ?object)
+    )
+  )
+
+
+  (:action BreakObject
+    :parameters (?robot - robot ?object - object)
+    :precondition (and
+                    (not(inaction ?robot))
+                    (at ?robot ?object)
+    )
+    :effect (and
+              (not(inaction ?robot))
+              (break ?robot ?object)
+    )
+  )
+ 
+
+  (:action CloseObject
+    :parameters (?robot - robot ?object - object)
+    :precondition (and
+                    (not(inaction ?robot))
+                    (at ?robot ?object)
+    )
+    :effect (and
+              (not(inaction ?robot))
+              (object-close ?robot ?object)
+  )
+  )
+
+
+
+  (:action SliceObject
+    :parameters (?robot - robot ?object - object ?location - object)
+    :precondition (and 
+                    (at-location ?object ?location)
+                    (at ?robot ?location)
+                    (not(inaction ?robot))
+    )
+    :effect (and
+              (not(inaction ?robot))
+              (sliced ?object)
+    )
+  )    
+  
+)
+
+#based on the objects availiable for potential usage below."
+objects = ['SaltShaker', 'SoapBottle', 'Bowl', 'CounterTop', 'Drawer', 'Vase', 'Lettuce', 'Plate', 'Potato', 'Pan', 'Window', 'Fridge', 'Sink', 'Stool', 'DiningTable', 'HousePlant', 'Chair', 'Cup', 'Shelf', 'StoveKnob', 'ButterKnife', 'Bread', 'DishSponge', 'Floor', 'PepperShaker', 'Spatula', 'StoveBurner', 'Statue', 'Kettle', 'Apple', 'WineBottle', 'Knife', 'GarbageCan', 'Microwave', 'LightSwitch', 'Pot', 'Egg', 'Mug', 'CoffeeMachine', 'Faucet', 'Tomato', 'Spoon', 'Fork', 'Toaster', 'Book', 'SinkBasin', 'Cabinet', 'ShelvingUnit']
+
+#Task description: generate the problem file. Step by step, based on the objects potential useful availiable above, the domain file precondition, actions and subtask examination. Note that the robot initate as not inaction is enough(the statement includes robot location)
+#IMPORTANT, strictly follow the structure ,stop generate after the Problem file is generated.
+#To generate the problem file for the given domain and task of slicing a potato, we need to follow these steps:
+#Let's start by defining the objects and their initial states based on the provided list and task description.
+#Step 1: Identify Objects and Initial State
+
+#Objects Involved:
+
+    Robots: robot1
+    object: potato
+    object: knife
+    Inital location of potato,knife
+
+#Initial States:
+
+
+    at-location potato potato
+    at-location knife knife
+
+#Step 2: Define Goals
+
+Goals:
+
+    sliced potato
+
+pddl
+
+(define (problem slice_potato_problem)
+  (:domain robot1)
+  (:objects
+    robot1 - robot
+    potato - object
+    knife - object
+    counterTop - object
+  )
+  (:init
+    (at robot1 counterTop)
+    (at-location potato potato)
+    (at-location knife knife)
+  )
+  (:goal
+    (and
+      (sliced potato)
+    )
+  )
+)
+
+#Problem file generation is done
+#IMPORTANT stop generating after seeing Problem file generation is done.

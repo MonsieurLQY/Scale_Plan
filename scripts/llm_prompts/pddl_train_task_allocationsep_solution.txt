@@ -1,0 +1,130 @@
+# EXAMPLE 1 - Task Description: Turn off the light, turn on the faucet and leave the house. 
+#GENERAL TASK DECOMPOSITION
+#Decompose and parallelize subtasks where ever possible
+#Independent subtasks:
+#SubTask 1: Turn off the Light. (Skills Required: GoToObject, SwitchOff)
+#SubTask 2: Turn on the Faucet. (Skills Required: GoToObject, SwitchOn)
+#SubTask 3: Leave the House. (Skills Required: GoToObject, OpenObject,CloseObject)
+#We can parallelize SubTask 1 and SubTask 2 because they don't depend on each other. SubTask 3 is dependent on SubTask 1 and 2 being completed.
+
+#action description from domain for tasks required
+#Subtask 1: Turn off the Light
+
+# Initial Precondition analyze due to previous subtask:
+#1. Robot not at light switch location
+
+GoToObject: robot goes to the light switch.
+Parameters: ?robot, ?lightSwitch
+Preconditions: (not (inaction ?robot))
+Effects: (at ?robot ?lightSwitch), (not (inaction ?robot))
+
+SwitchOff: robot turns off the light.
+Parameters: ?robot, ?lightSwitch
+Preconditions: (at ?robot ?lightSwitch), (not (inaction ?robot))
+Effects: (switch-off ?robot ?lightSwitch), (not (inaction ?robot))
+
+#Subtask 2: Turn on the Faucet
+
+# Initial Precondition analyze due to previous subtask:
+#1. Robot not at Faucet location
+
+GoToObject: robot goes to the faucet.
+Parameters: ?robot, ?faucet
+Preconditions: (not (inaction ?robot))
+Effects: (at ?robot ?faucet), (not (inaction ?robot))
+
+SwitchOn: robot turns on the faucet.
+Parameters: ?robot, ?faucet
+Preconditions: (at ?robot ?faucet), (not (inaction ?robot))
+Effects: (switch-on ?robot ?faucet), (not (inaction ?robot))
+
+#Subtask 3: Leave the House
+
+# Initial Precondition analyze due to previous subtask:
+#1. Robot not at the door
+
+GoToObject: robot goes to the door.
+Parameters: ?robot, ?door
+Preconditions: (not (inaction ?robot))
+Effects: (at ?robot ?door), (not (inaction ?robot))
+
+OpenObject: robot opens the door.
+Parameters: ?robot, ?door
+Preconditions: (not (inaction ?robot)), (at ?robot ?door)
+Effects: (object-open ?robot ?door), (not (inaction ?robot))
+
+CloseObject: robot closes the door.
+Parameters: ?robot, ?door
+Preconditions: (not (inaction ?robot)), (at ?robot ?door)
+Effects: (object-close ?robot ?door), (not (inaction ?robot))
+
+# TASK ALLOCATION
+# Scenario: There are 2 robots available. The task should be performed using the minimum number of robots necessary. Robots should be assigned to subtasks that match its skills and mass capacity. 
+# Task Allocation Rules: Each subtask should be assigned to a single or multiple robots that collectively possess all the skills required for the subtask and can handle the mass of the objects involved in the task. If a subtask cannot be performed by a single robot due to its skill set or mass capacity, you can use multiple robots to perform the subtask. The combined skills and mass capacity of the robots should meet all the skill and mass preconditions of the subtask,If a subtask can be performed in parallel with other subtasks (i.e., it does not depend on the completion of other tasks), assign it to robots that can start immediately and can handle the mass of the objects involved. If a subtask must be performed sequentially after other subtasks (i.e., it depends on the completion of other subtasks), assign it to robots that can start as soon as the preceding subtasks are complete and can handle the mass of the objects involved. Based on the 'GENERAL TASK DECOMPOSITION' given above, identify the subtasks for each main task, the skills required for each subtask, and the mass of the objects and mass capacity of robots involved in each subtask. Determine whether the subtasks must be performed sequentially or in parallel, or a combination of both, and whether the mass of the objects involved in the subtasks is within the mass capacity of the robots.
+robots = [{'name': 'robot1', 'no_skills': 9, 'skills': ['GoToObject', 'OpenObject', 'CloseObject', 'BreakObject', 'SliceObject', 'DropHandObject', 'ThrowObject', 'PushObject', 'PullObject'],'mass': 2}, {'name': 'robot2', 'no_skills': 13, 'skills': ['GoToObject', 'OpenObject', 'CloseObject', 'BreakObject', 'SliceObject', 'PickupObject', 'PutObject', 'SwitchOn', 'SwitchOff', 'DropHandObject', 'ThrowObject', 'PushObject', 'PullObject'],'mass': 2}]
+objects = ['SaltShaker', 'SoapBottle','Bowl', 'CounterTop', 'Drawer', 'Vase', 'Lettuce', 'Plate', 'Potato', 'Pan', 'Window', 'Fridge', 'Sink', 'Stool', 'DiningTable', 'HousePlant', 'Chair', 'Cup', 'Shelf', 'StoveKnob', 'ButterKnife', 'Bread', 'DishSponge', 'Floor', 'PepperShaker', 'Spatula', 'StoveBurner', 'Statue', 'Kettle', 'Apple', 'WineBottle', 'Knife', 'GarbageCan', 'Microwave', 'LightSwitch', 'Pot', 'Egg', 'Mug', 'CoffeeMachine', 'Faucet', 'Tomato', 'Spoon', 'Fork', 'Toaster', 'Book', 'SinkBasin', 'Cabinet', 'ShelvingUnit']
+# IMPORTANT: The AI should ensure that the robots assigned to the tasks have all the necessary skills to perform the tasks. IMPORTANT: Determine whether the subtasks must be performed sequentially or in parallel, or a combination of both and allocate robots based on availablitiy. "
+
+# SOLUTION
+# Robot 1 has 9 skills, while Robot 2 has 13 skills. Robots do not have same number of skills. 
+# All the robots DONOT share the same set and number of skills (no_skills) and objects have different mass. In this case where all robots have different sets of skills and objects have different mass - Focus on Task Allocation based on Robot Skills alone. 
+# Analyze the skills required for each subtask and the skills each robot possesses. In this scenario, we have one subtask: 'Turn off the light'.
+# For the 'Turn off the light' subtask, it can be performed by any robot with 'GoToObject' and 'SwitchOff' skills. In this case, Robots 2 has all these skills.
+# For the 'Turn on the faucet' subtask, it can be performed by any robot with 'GoToObject' and 'SwitchOn' skills. In this case, Robot 2 has all these skills.
+# For the 'Leave the house' subtask, it can performed only after subtask 1 and subtask 2 is done. In this case, Robots 2 after finishing 'turn off the light' and 'turn off the facut task'
+# No teams are required since SubTasks can be performed with individual robots as explained above. The 'Turn off the light' and 'Turn on the faucet' subtasks, and 'leave the house' subtask are sequantially assigned to Robot 2. 
+# Robot 2 cannot do both the SubTasks in parallel. Serialize the SubTasks and perform them one after the other using Robot 2. 
+
+
+
+# EXAMPLE 2 - Task Description: Slice the Potato 
+#GENERAL TASK DECOMPOSITION
+#Decompose and parallelize subtasks where ever possible
+#SubTask: Slice the Potato (Skills Required: GoToObject, PickupObject, GoToObject, SliceObject)
+#We can sequential run subtask #1 because Subtask 1 is the only task.
+
+#action description from domain for tasks required
+
+#Subtask 1: Slice the Potato
+
+# Initial Precondition analyze due to previous subtask:
+#1. Robot not at the potato
+#3. Robot not holding knife
+
+
+GoToObject: robot goes to the knife.
+Parameters: ?robot , ?knife
+Preconditions: (not (inaction ?robot))
+Effects: (at ?robot ?knife), (not (inaction ?robot))
+                                   
+PickupObject: robot picks up the knife.
+Parameters: ?robot, ?knife, ?knife
+Preconditions: (at-location ?knife ?knife), (at ?robot ?knife), (not (holding ?robot ?knife)), (not (inaction ?robot))
+Effects: (holding ?robot ?knife), (not (inaction ?robot))
+
+GoToObject: robot goes to the potato.
+Parameters: ?robot , ?potato
+Preconditions: (not (inaction ?robot))
+Effects: (at ?robot ?potato), (not (inaction ?robot))
+                                   
+SliceObject: robot slices the potato.
+Parameters: ?robot, ?potato, ?potato
+Preconditions: (at-location ?potato ?potato), (at ?robot ?potato), (not (inaction ?robot))
+Effects: (sliced ?potato), (not (inaction ?robot))
+
+#Task Slice the Potato is done.
+
+
+# TASK ALLOCATION
+# Scenario: There are 3 robots available. The task should be performed using the minimum number of robots necessary. Robots should be assigned to subtasks that match its skills and mass capacity. 
+# Task Allocation Rules: Each subtask should be assigned to a single or multiple robots that collectively possess all the skills required for the subtask and can handle the mass of the objects involved in the task. If a subtask cannot be performed by a single robot due to its skill set or mass capacity, you can use multiple robots to perform the subtask. The combined skills and mass capacity of the robots should meet all the skill and mass preconditions of the subtask,If a subtask can be performed in parallel with other subtasks (i.e., it does not depend on the completion of other tasks), assign it to robots that can start immediately and can handle the mass of the objects involved. If a subtask must be performed sequentially after other subtasks (i.e., it depends on the completion of other subtasks), assign it to robots that can start as soon as the preceding subtasks are complete and can handle the mass of the objects involved. Based on the 'GENERAL TASK DECOMPOSITION' given above, identify the subtasks for each main task, the skills required for each subtask, and the mass of the objects and mass capacity of robots involved in each subtask. Determine whether the subtasks must be performed sequentially or in parallel, or a combination of both, and whether the mass of the objects involved in the subtasks is within the mass capacity of the robots.
+robots = [{'name': 'robot1', 'no_skills': 5, 'skills': ['GoToObject', 'OpenObject', 'CloseObject', 'BreakObject', 'SliceObject'],'mass': 2}, {'name': 'robot2', 'no_skills': 10, 'skills': ['GoToObject', 'OpenObject', 'CloseObject', 'BreakObject', 'SwitchOn', 'SwitchOff', 'DropHandObject', 'ThrowObject', 'PushObject', 'PullObject'],'mass': 2}, {'name': 'robot3', 'no_skills': 7, 'skills': ['GoToObject', 'OpenObject', 'CloseObject', 'BreakObject', 'PickupObject', 'PutObject', 'DropHandObject'],'mass': 2}]
+objects = ['SaltShaker', 'SoapBottle', 'Bowl', 'CounterTop', 'Drawer', 'Vase', 'Lettuce', 'Plate', 'Potato', 'Pan', 'Window', 'Fridge', 'Sink', 'Stool', 'DiningTable', 'HousePlant', 'Chair', 'Cup', 'Shelf', 'StoveKnob', 'ButterKnife', 'Bread', 'DishSponge', 'Floor', 'PepperShaker', 'Spatula', 'StoveBurner', 'Statue', 'Kettle', 'Apple', 'WineBottle', 'Knife', 'GarbageCan', 'Microwave', 'LightSwitch', 'Pot', 'Egg', 'Mug', 'CoffeeMachine', 'Faucet', 'Tomato', 'Spoon', 'Fork', 'Toaster', 'Book', 'SinkBasin', 'Cabinet', 'ShelvingUnit']
+# IMPORTANT: The AI should ensure that the robots assigned to the tasks have all the necessary skills to perform the tasks. IMPORTANT: Determine whether the subtasks must be performed sequentially or in parallel, or a combination of both and allocate robots based on availablitiy. "
+
+# SOLUTION
+# Robot 1 has 5 skills, while Robot 2 has 10 and robot 3 has 7 skills. Robots do not have same number of skills.
+# All the robots DONOT share the same set and number of skills (no_skills) and objects have different mass. In this case where all robots have different sets of skills and objects have different mass - Focus on Task Allocation based on Robot Skills alone. 
+# Analyze the skills required for each subtask and the skills each robot possesses. In this scenario, we have one main subtasks: 'Slice the Potato'.
+# For the 'Slice the Potato' subtask, the team needs 'GoToObject', 'PickupObject', and 'SliceObject'. Robot 1 provides 'SliceObject', while Robot 3 provides 'GoToObject' and 'PickupObject'.
+# Multiple robots are required since SubTasks can't be performed with individual robots as explained above. The 'Slice the Potato' subtask is assigned to Robots 1 and 3. 

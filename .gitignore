@@ -1,0 +1,27 @@
+# Local files excluded from release
+dont include/
+
+# Local credentials
+api_key
+api_key.*
+*.api_key
+
+# Generated outputs
+logs/
+logs_*/
+**/logs/
+**/logs_*/
+log*/
+**/log*/
+*.log
+plan_to_code_results/
+**/plan_to_code_results/
+veracode_packages/
+resources/each_run/
+sas_plan
+sas_plan.*
+
+# Python artifacts
+__pycache__/
+**/__pycache__/
+*.py[cod]

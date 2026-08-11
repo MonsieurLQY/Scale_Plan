@@ -1,0 +1,17 @@
+READ THIS AGREEMENT CAREFULLY AND COMPLETELY BEFORE DOWNLOADING THE SOFTWARE. BY DOWNLOADING, INSTALLING, USING OR DISTRIBUTING THE SOFTWARE, YOU ACCEPT ALL OF THE TERMS OF THIS AGREEMENT. IF YOU DO NOT AGREE, DO NOT PROCEED.
+
+Copyright © Honda Research Institute USA, Inc. (“HRI”), 2026. All Rights Reserved. HRI hereby grants you a non-transferable, non-exclusive license to install and use this Software, and its documentation solely for educational, research, and not-for-profit purposes, without fee, provided that 1) the above copyright notice, this paragraph and the following paragraphs appear in all copies; and 2) you agree to the restrictions and conditions of the license in this paragraph and the following paragraphs.  This license does not include the rights to, and you agree not to, rent, lease, lend, sell, redistribute (whether by physical copies or digital distribution), sublicense, make derivative works of, or copy (except as permitted above for installation and use by you only) this Software.  However, you may make others aware of this Software so that they may download it on their own from an authorized website.
+
+IN NO EVENT SHALL HRI OR ITS AFFILIATES BE LIABLE TO ANY PARTY FOR DIRECT, INDIRECT, SPECIAL, INCIDENTAL, OR CONSEQUENTIAL DAMAGES, INCLUDING LOST PROFITS, ARISING OUT OF THE USE OF THIS SOFTWARE AND ITS DOCUMENTATION, EVEN IF HRI OR ITS AFFILIATES HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+HRI AND ITS AFFILIATES SPECIFICALLY DISCLAIM ALL WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE, NONINFRINGEMENT, QUALITY AND ACCURACY. THE SOFTWARE AND ACCOMPANYING DOCUMENTATION PROVIDED HEREUNDER IS PROVIDED “AS IS”. HRI AND ITS AFFILIATES HAVE NO OBLIGATION TO PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS, OR MODIFICATIONS.  YOU AGREE TO INDEMNIFY, DEFEND, AND HOLD HARMLESS HRI AND ITS AFFILIATES FOR ALL CLAIMS ARISING FROM ANY USE OF THE SOFTWARE.
+
+If you give any feedback about this Software, you agree that any feedback given by you to HRI or its affiliates about this Software is given with a fully irrevocable and sub-licensable perpetual, worldwide right and license to use the feedback, including any and all intellectual property rights in the feedback, such as copyright or patent rights, including the ability to incorporate the feedback in future versions of this Software.  
+
+You will not modify, reverse engineer, or disassemble this Software without a written agreement with HRI.  
+
+You are responsible for complying with any U.S. or non-U.S. export control laws and other applicable governmental export and import laws and regulations. 
+
+No license is granted, claim of copyright is made, or attempt to restrict distribution is made with respect to any files from third-parties that may be required for execution of this Software.  You must separately ensure you obtain a separate, valid license for those files.  HRI AND ITS AFFILIATES DISCLAIM ALL LIABILITY WITH RESPECT TO THIRD PARTY SOFTWARE, AND YOU AGREE TO INDEMNIFY AND ASSIST IN THE DEFENSE OF ANY CLAIM BASED ON SUCH FILES.
+
+This license shall be governed by the laws of the state of California without regard to its conflicts of law provisions.

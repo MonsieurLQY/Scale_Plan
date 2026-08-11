@@ -1,0 +1,1 @@
+{"task": "Parallely put pen and book on the bed", "robot list": [11, 17 ,25], "object_states" : [{"name": "Bed", "contains": ["Pen", "Book"], "state": "None"}], "trans": 0, "min_trans": 17}

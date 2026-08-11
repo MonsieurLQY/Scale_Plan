@@ -1,0 +1,7 @@
+ai2thor==5.0.0
+matplotlib==3.10.5
+networkx==3.4.2
+numpy==2.2.5
+openai==2.14.0
+opencv-python==4.11.0.86
+scipy==1.15.3
