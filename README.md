@@ -135,6 +135,34 @@ python scripts/run_experiments_parallel.py \
   --openai-api-key-file /path/to/api_key.txt
 ```
 
+### 4. Gemini client (RoboPARA-2.0)
+
+`scripts/gemini_client.py` calls `gemini-3.7-flash` on Vertex AI with a service
+account and accepts text plus one optional scene image (PNG, JPEG or WebP). It
+matches the LABOR-Agent client and is independent of AI2-THOR; the planners
+above still use OpenAI. If Vertex reports the model as unavailable (404), the
+client switches to `gemini-3.8-flash`.
+
+```bash
+python -m pip install -r requirements-gemini.txt
+python scripts/gemini_client.py
+python scripts/gemini_client.py --image /path/to/scene.png --prompt "Describe the visible objects."
+```
+
+The defaults are the service-account file
+`~/.config/robopara/p-150gk23k-718446bc2ebd.json`, project `p-150gk23k` and
+location `global`. Override them with `GOOGLE_APPLICATION_CREDENTIALS`,
+`GOOGLE_CLOUD_PROJECT`, `GOOGLE_CLOUD_LOCATION`, `VERTEX_MODEL` and
+`VERTEX_FALLBACK_MODEL`, or with `--credentials`, `--project`, `--location`,
+`--model` and `--fallback-model`. Command-line options take precedence.
+
+```python
+from gemini_client import GeminiClient
+
+with GeminiClient() as model:
+    text = model.call("Describe the objects on the table.", image_path="scene.png")
+```
+
 ## Dataset format
 
 Datasets belong in `data/MAT2THOR/` and use this naming convention:
