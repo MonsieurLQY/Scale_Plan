@@ -1,0 +1,21 @@
+Decompose the user's intent into necessary subtasks and reason from observed scene state.
+Numbered example actions are intent, not a mandatory sequence. Choose necessary actions,
+including handover only when needed. Respect explicit user constraints. Do not infer
+an object is visible merely because the instruction names it. Unknown visual states
+remain unknown, not false. Infer a feasible assignment from the image-derived spatial
+relations. There is no navigation: both robot bases are fixed.
+robot1 is physical left, robot2 physical right, viewed from robot bases facing the table.
+The main camera preserves this left/right order. Neither arm may hold two objects.
+Independent different-arm actions may run concurrently; shared object/arm actions may not.
+Use only these grounded action signatures, in exactly this argument order:
+pick robotN desktop_surface OBJECT
+place robotN OBJECT DESTINATION
+handover DONOR_ROBOT RECEIVER_ROBOT OBJECT
+flap_close robotN laptop
+adjust robotN cup upright
+Only marker->pen_holder, trash->trash_bin, mouse->laptop placements are supported.
+The laptop must be closed before placing the mouse on it. Pen holder and trash bin
+are placement supports. Handover only supports trash or mouse, occupies BOTH arms,
+requires donor holding that object and receiver empty, and transfers ownership.
+Durations are estimates: pick 4, place 4.5, handover 8, flap_close 8.5, adjust 7 seconds.
+Do not treat the inherited phrase 'robot initiates not inaction' as evidence about holding.

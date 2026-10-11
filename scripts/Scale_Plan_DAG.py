@@ -15,8 +15,6 @@ from typing import Dict, List, Literal, Optional, Set, Tuple
 
 import matplotlib.pyplot as plt
 import networkx as nx
-import openai
-from openai import APIConnectionError, APIError, OpenAI, OpenAIError, RateLimitError
 
 from AI2ThorSim import get_ai2_thor_objects_randomized
 from lamma_p import TaskManager, parse_arguments
@@ -29,12 +27,23 @@ REPOSITORY_ROOT = Path(__file__).resolve().parents[1]
 client = None
 
 
-def get_openai_client() -> OpenAI:
+def get_openai_client():
     """Create the SDK client only after the configured API key is loaded."""
+    import openai
+    from openai import OpenAI
     global client
     if client is None:
         client = OpenAI(api_key=openai.api_key)
     return client
+
+def _openai_errors():
+    # Only the legacy OpenAI pipeline needs its optional SDK.
+    try:
+        from openai import OpenAIError
+    except ImportError:
+        return ()
+    return (OpenAIError,)
+
 
 # ----------------- Domain-specific configuration -----------------
 # Predicates to exclude from *matching* (logical-state) — geometric/sentinels:
@@ -590,9 +599,9 @@ def get_task_name(domain_path: Path) -> str:
 class ScalePlanTaskManager(TaskManager):
     """Manages task processing for SPS (Single-Path Synthesis) tasks."""
 
-    def __init__(self, base_path: str, gpt_version: str, api_key_file: str, prompt_decompse_set: str = "pddl_train_task_decomposesep", prompt_allocation_set: str = "pddl_train_task_allocationsep", verbose: bool = True, task_type: str = "simple_tasks", method: str = "Scale_Plan"):
+    def __init__(self, base_path: str, gpt_version: str, api_key_file: str, prompt_decompse_set: str = "pddl_train_task_decomposesep", prompt_allocation_set: str = "pddl_train_task_allocationsep", verbose: bool = True, task_type: str = "simple_tasks", method: str = "Scale_Plan", **kwargs):
         # Initialize the SPS task manager.
-        super().__init__(base_path, gpt_version, api_key_file, prompt_decompse_set, prompt_allocation_set, verbose, task_type, method)
+        super().__init__(base_path, gpt_version, api_key_file, prompt_decompse_set, prompt_allocation_set, verbose, task_type, method, **kwargs)
         # Step 1: Parse and preprocess domain
         self.get_domain_and_content()
     
@@ -838,7 +847,7 @@ class ScalePlanTaskManager(TaskManager):
                     #if self.verbose:
                                     
 
-                except (OpenAIError, APIError, RateLimitError, APIConnectionError) as e:
+                except _openai_errors() as e:
                     print(f"OpenAI-related error while processing task '{task}': {e}")
                     continue  # Skip this task but continue with others
                 except Exception as task_error:
@@ -906,7 +915,7 @@ class ScalePlanTaskManager(TaskManager):
                     #if self.verbose:
                                     
 
-                except (OpenAIError, APIError, RateLimitError, APIConnectionError) as e:
+                except _openai_errors() as e:
                     print(f"OpenAI-related error while processing task '{task}': {e}")
                     continue  # Skip this task but continue with others
                 except Exception as task_error:
@@ -990,7 +999,7 @@ class ScalePlanTaskManager(TaskManager):
                     #if self.verbose:
                                     
 
-                except (OpenAIError, APIError, RateLimitError, APIConnectionError) as e:
+                except _openai_errors() as e:
                     print(f"OpenAI-related error while processing task '{task}': {e}")
                     continue  # Skip this task but continue with others
                 except Exception as task_error:

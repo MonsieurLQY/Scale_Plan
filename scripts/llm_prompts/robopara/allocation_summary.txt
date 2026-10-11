@@ -1,0 +1,12 @@
+Summarize all subtasks and allocations exactly in this format, without a code fence:
+# Problem content summary:
+#SubTask 1: descriptive name
+Initial Preconditions: the required known/unknown scene predicates
+Actions: necessary actions, their exact arguments, preconditions and effects
+**Assigned Robot**: robot1
+**Objects Involved**: canonical IDs separated by commas
+Repeat #SubTask N blocks for every subtask. For joint subtasks use
+**Assigned Robots**: robot1, robot2. Preserve allocation, dependencies and concurrency.
+# Sequence of Operations:
+Describe the sequential dependencies and independent concurrent subtask groups explicitly.
+Do not introduce extra tasks. A subtask must include both Assigned Robot(s) and Objects Involved lines.

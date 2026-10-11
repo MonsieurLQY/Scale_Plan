@@ -17,10 +17,6 @@ from datetime import datetime
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple, Union
 
-import openai
-import ai2thor
-import ai2thor.controller
-from ai2thor.platform import CloudRendering
 
 from security_utils import (
     resolve_within,
@@ -85,6 +81,8 @@ class PDDLUtils:
         """
         controller = None
         try:
+            import ai2thor.controller
+            from ai2thor.platform import CloudRendering
             controller = ai2thor.controller.Controller(scene=f"FloorPlan{floor_plan}", platform=CloudRendering)
             obj = [obj["objectType"] for obj in controller.last_event.metadata["objects"]]
             obj_mass = [obj["mass"] for obj in controller.last_event.metadata["objects"]]
@@ -291,7 +289,7 @@ class FileProcessor:
                 fixed_subtasks.append(subtask)
                 continue
 
-            if llm and gpt_version:
+            if llm and gpt_version and getattr(llm, "allow_format_repair", True):
                 fix_prompt = (
                     "The following subtask description needs to be reformatted. Please reformat it to strictly follow this structure:\n\n"
                     "#SubTask [number]: [Task Name]\n\n"
@@ -414,6 +412,8 @@ class LLMHandler:
         Args:
             api_key_file (str): Path to the API key file
         """
+        import openai
+        self.openai = openai
         self.setup_api(api_key_file)
     
     def setup_api(self, api_key_file: str) -> None:
@@ -437,7 +437,7 @@ class LLMHandler:
                 "Set OPENAI_API_KEY or provide a non-empty API key file with "
                 "--openai-api-key-file."
             )
-        openai.api_key = api_key
+        self.openai.api_key = api_key
     
     def query_model(
         self, 
@@ -460,6 +460,7 @@ class LLMHandler:
             Tuple of (full response object, generated text)
             
         """
+        openai = self.openai
         retry_delay = DEFAULT_RETRY_DELAY
         
         for attempt in range(MAX_RETRIES):
@@ -648,7 +649,7 @@ class TaskManager:
  result logging.
     """
     
-    def __init__(self, base_path: str, gpt_version: str, api_key_file: str, prompt_decompse_set: str = "pddl_train_task_decomposesep", prompt_allocation_set: str = "pddl_train_task_allocationsep", verbose: bool = False, task_type: str = "simple_tasks", method: str = "lammap"):
+    def __init__(self, base_path: str, gpt_version: str, api_key_file: str, prompt_decompse_set: str = "pddl_train_task_decomposesep", prompt_allocation_set: str = "pddl_train_task_allocationsep", verbose: bool = False, task_type: str = "simple_tasks", method: str = "lammap", *, llm_handler=None, resources_path=None, logs_root=None, clean_generated=True, use_pddl_solver=True):
         """Initialize the task manager.
         
         Args:
@@ -668,8 +669,8 @@ class TaskManager:
         self.method = method
 
         # Initialize paths
-        self.resources_path = os.path.join(self.base_path, "resources")
-        logs_root = os.path.join(self.base_path, "logs", f"logs_{method}")
+        self.resources_path = str(resources_path or os.path.join(self.base_path, "resources"))
+        logs_root = str(logs_root or os.path.join(self.base_path, "logs", f"logs_{method}"))
 
         self.logs_path_simple = os.path.join(logs_root, "simple_tasks")
         self.logs_path_complex = os.path.join(logs_root, "complex_tasks")
@@ -680,16 +681,17 @@ class TaskManager:
         os.makedirs(self.logs_path_vague, exist_ok=True)
         
         # Initialize components
-        self.llm = LLMHandler(api_key_file)
+        self.llm = llm_handler if llm_handler is not None else LLMHandler(api_key_file)
         self.file_processor = FileProcessor(self.base_path)
         self.validator = PDDLValidator(self.llm, self.file_processor)
-        self.planner = PDDLPlanner(self.base_path, self.file_processor)
+        self.planner = PDDLPlanner(self.base_path, self.file_processor) if use_pddl_solver else None
         
 
         
         # Clean generated subtask directory
-        self.clean_generated_subtask_directory(False)
-        self.clean_generated_subtask_directory(True)
+        if clean_generated:
+            self.clean_generated_subtask_directory(False)
+            self.clean_generated_subtask_directory(True)
         
         # Initialize result storage
         self.decomposed_plan: List[str] = []
@@ -1245,7 +1247,7 @@ class TaskManager:
                 # Team task: concatenate all team domains
                 all_domain_contents = ""
                 for robot in normalized_robot_numbers:
-                    domain_path = os.path.join(self.base_path, "resources", f"{robot}.pddl")
+                    domain_path = os.path.join(self.resources_path, f"{robot}.pddl")
                     domain_text = file_processor.read_file(domain_path)
                     if domain_text:
                         all_domain_contents += domain_text
@@ -1300,7 +1302,7 @@ class TaskManager:
                         normalized_robot_numbers = [normalized_robot_numbers[0]]
 
                 robotassignnumber = f"{normalized_robot_numbers[0].replace(' ', '')}.pddl"
-                domain_path = os.path.join(self.base_path, "resources", robotassignnumber)
+                domain_path = os.path.join(self.resources_path, robotassignnumber)
 
 
                 domain_content = file_processor.read_file(domain_path) or ""

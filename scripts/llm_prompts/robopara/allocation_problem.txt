@@ -1,0 +1,9 @@
+For this subtask, synthesize a grounded executable action sequence directly from the domain,
+observations and allocation. Despite the inherited wording 'problem file', output a timed
+PDDL PLAN, not a PDDL problem definition. Format every action as:
+0.000: (pick robot1 desktop_surface marker) [4.000]
+This is a format example, not a required action or assignment. Use the actual subtask.
+Arguments: pick ARM SOURCE OBJECT; place ARM OBJECT DESTINATION;
+handover DONOR RECEIVER OBJECT; flap_close ARM laptop; adjust ARM cup upright.
+Handover occupies both arms. No same-arm overlap. Include necessary dependency analysis
+before the plan. Do not invent unknown objects or initial facts.

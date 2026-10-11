@@ -31,6 +31,8 @@ class GeminiClient:
         self.model = model or os.getenv("VERTEX_MODEL") or DEFAULT_MODEL
         self.fallback_model = (fallback_model or os.getenv("VERTEX_FALLBACK_MODEL")
                                or DEFAULT_FALLBACK_MODEL)
+        self.requested_model = self.model
+        self.calls = []
         self.project = project or os.getenv("GOOGLE_CLOUD_PROJECT") or DEFAULT_PROJECT
         self.location = location or os.getenv("GOOGLE_CLOUD_LOCATION") or "global"
         self.credentials_path = Path(
@@ -79,6 +81,10 @@ class GeminiClient:
             response = self.client.models.generate_content(
                 model=self.model, contents=contents, config=config,
             )
+        self.calls.append({"requested_model": self.requested_model,
+                           "client_model": self.model,
+                           "response_model_version": getattr(response, "model_version", None),
+                           "fallback_used": self.model != self.requested_model})
         if not response.text or not response.text.strip():
             raise RuntimeError("Gemini returned no text; request may have been blocked")
         return response.text

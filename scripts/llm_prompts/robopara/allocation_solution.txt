@@ -1,0 +1,6 @@
+Allocate the decomposed subtasks to the two fixed arms using the visual scene description.
+Use exact robot1 / robot2 assignments. Retain dependencies, joint handovers and parallelism.
+Never assign simultaneous actions to the same arm or same object. Account for ownership
+across pick/handover/place. Output each subtask with **Assigned Robot**: robot1 or robot2
+(or **Assigned Robots**: robot1, robot2 for a joint subtask), followed on the next line by
+**Objects Involved**: the canonical object IDs. Explain ordering and parallel subtask groups.

@@ -320,3 +320,14 @@ Third-party components remain subject to their respective licenses; see
 - Run commands from the repository root.
 - AI2-THOR simulations are resource-intensive. Reduce `--max-workers` if
   parallel runs exhaust CPU, memory, or rendering capacity.
+
+## RoboPARA 2.0 shared-executor baseline
+
+The new `scripts/run_robopara.py` entry point uses the existing Vertex Gemini
+client for initial-image perception and the original multi-stage Scale-Plan
+pipeline. It submits a semantic dual-arm plan to the `scaleplan` branch of
+RoboPARA 2.0. Instructions and a separate physical-goal subset configuration
+can be replaced per episode. This is a shared ground-truth skill executor
+comparison, separate from RGB-only low-level policy evaluation.
+
+See [接入、运行与评分说明](docs/ROBOPARA.md) for commands, boundaries and tests.
